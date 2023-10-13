@@ -94,33 +94,6 @@ export async function getGo(
   let info: IGoVersionInfo | null = null;
 
   //
-  // Try download from internal distribution (popular versions only)
-  //
-  try {
-    info = await getInfoFromManifest(versionSpec, true, auth, arch, manifest);
-    if (info) {
-      downloadPath = await installGoVersion(info, auth, arch);
-    } else {
-      core.info(
-        'Not found in manifest.  Falling back to download directly from Go'
-      );
-    }
-  } catch (err) {
-    if (
-      err instanceof tc.HTTPError &&
-      (err.httpStatusCode === 403 || err.httpStatusCode === 429)
-    ) {
-      core.info(
-        `Received HTTP status code ${err.httpStatusCode}.  This usually indicates the rate limit has been exceeded`
-      );
-    } else {
-      core.info(err.message);
-    }
-    core.debug(err.stack);
-    core.info('Falling back to download directly from Go');
-  }
-
-  //
   // Download from storage.googleapis.com
   //
   if (!downloadPath) {

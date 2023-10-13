@@ -61434,29 +61434,6 @@ function getGo(versionSpec, checkLatest, auth, arch = os_1.default.arch()) {
         let downloadPath = '';
         let info = null;
         //
-        // Try download from internal distribution (popular versions only)
-        //
-        try {
-            info = yield getInfoFromManifest(versionSpec, true, auth, arch, manifest);
-            if (info) {
-                downloadPath = yield installGoVersion(info, auth, arch);
-            }
-            else {
-                core.info('Not found in manifest.  Falling back to download directly from Go');
-            }
-        }
-        catch (err) {
-            if (err instanceof tc.HTTPError &&
-                (err.httpStatusCode === 403 || err.httpStatusCode === 429)) {
-                core.info(`Received HTTP status code ${err.httpStatusCode}.  This usually indicates the rate limit has been exceeded`);
-            }
-            else {
-                core.info(err.message);
-            }
-            core.debug(err.stack);
-            core.info('Falling back to download directly from Go');
-        }
-        //
         // Download from storage.googleapis.com
         //
         if (!downloadPath) {
